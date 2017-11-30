@@ -66,25 +66,39 @@ ADErr insertMeeting(AD* ptr);
 /* 
 ** description: create struct of meeting type.
 ** input: 		startTime - end time of meeting, float format.
-**             endTime - end time of meeting, float format.
-					room - room number.s
+**              endTime - end time of meeting, float format.
+			    room - room number.
 ** 					
-** output: 		allocation success  - handler to the dynamic array.
-** 				allocation fail 	- null.
-** notes: 		1. if both input arguments are zero, function return null.
-** 				2. the responsibility to destroyDA after use it is on the user.
+** output: 		if remove success - REMOVE_SUCCESS
+** 				
+** notes: 		1. 
+** 				2. 
 */   
 ADErr removeMeeting(AD* ptr, float startTime);	
 
 
 /*
- Description: Prints the contents DA
- Input: pointer to DA
- Output: void
- Error: No Error
+** Description: Prints the contents DA
+** Input: pointer to DA
+** Output: void
+** Error: No Error
 */
 void printAD(AD* ptr);
 
+/*
+** Description: Save the contents of DA to file
+** Input: pointer to DA
+** Output: NONE
+** Error: PTR_NOT_INIT
+*/
 
+ADErr saveToFile(AD* ptr);
 
+/*
+** Description: Save the contents of DA to file
+** Input: pointer to DA
+** Output: NONE
+** Error: PTR_NOT_INIT
+*/
 
+ADErr loadFromFile(AD* ptr);

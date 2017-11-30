@@ -5,6 +5,7 @@
 
 
 struct AD {
+	FILE* fp;
 	meeting** ADptr;
 	meeting* tmpMeeting;
 	size_t size;
@@ -204,6 +205,35 @@ void shiftAndInsert(AD* ptr,int index) {
 		ptr->ADptr[i] = ptr->ADptr[i-1];
 	}
 	ptr->ADptr[index] = ptr->tmpMeeting;
+}
+
+
+ADErr saveToFile(AD* ptr) {
+	
+	int i;		
+	if(ptr == NULL) return PTR_NOT_INIT;	
+	FILE* fp = fopen("dailyDiary.txt", "w");
+	if(fp == NULL) return PTR_NOT_INIT;
+	ptr->fp = fp;
+
+	for(i=0; i < ptr->numOfMeetings; i++)
+		fprintf(fp,"%f %f %lu\n",ptr->ADptr[i]->startTime,ptr->ADptr[i]->endTime,ptr->ADptr[i]->room);
+}
+
+ADErr loadFromFile(AD* ptr) {
+	float startTime, endTime;
+	size_t room;
+	int i;		
+	if(ptr == NULL) return PTR_NOT_INIT;	
+	FILE* fp = fopen("dailyDiary.txt", "r");
+	if(fp == NULL) return PTR_NOT_INIT;
+	ptr->fp = fp;
+	
+	while(feof(fp)) {
+		fscanf(fp,"%f %f %lu\n",&startTime,&endTime,&room);
+		createMeeting(ptr, startTime,endTime,room);
+		insertMeeting(ptr);
+	}
 }
 
 
