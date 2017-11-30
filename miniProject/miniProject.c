@@ -41,6 +41,7 @@ AD* createAD() {
 
 ADErr createMeeting(AD* ptr, float startTime, float endTime, size_t room) {
 	
+
 	if(ptr == NULL) return PTR_NOT_INIT;
 	
 	meeting* newMeeting = (meeting*)malloc(sizeof(meeting));
@@ -64,7 +65,9 @@ void destroyAD(AD* ptr) {
 }
 
 ADErr insertMeeting(AD* ptr) {
-int indexOfMeeting;
+
+int indexOfMeeting, i;
+
 meeting** tmpMeetingPtr;
 
 	if(ptr == NULL || ptr->ADptr == NULL || ptr->tmpMeeting == NULL )
@@ -95,6 +98,12 @@ meeting** tmpMeetingPtr;
 				
 				shiftAndInsert(ptr, indexOfMeeting);
 				
+			
+				for(i=indexOfMeeting; i < (ptr->numOfMeetings); i++) {
+					ptr->ADptr[i+1] = ptr->ADptr[i];
+				}
+				ptr->ADptr[indexOfMeeting] = ptr->tmpMeeting;
+				
 				(ptr->numOfMeetings)++;
 				return INSERT_SUCCESS;
 			}
@@ -115,6 +124,7 @@ meeting** tmpMeetingPtr;
 	
 	indexOfMeeting = findMeetingForInsert(ptr);
 	shiftAndInsert(ptr, indexOfMeeting);
+	ptr->ADptr[ptr->numOfMeetings] = ptr->tmpMeeting;
 	(ptr->numOfMeetings)++;
 
 	return INSERT_SUCCESS;
@@ -134,13 +144,18 @@ int i, indexOfMeeting;
 	if(indexOfMeeting == NO_MEETING_FOUND)
 		return NO_MEETING_FOUND;
 		
+		
+	if (indexOfMeeting != NO_MEETING_FOUND) {
+	
 		free(ptr->ADptr[indexOfMeeting]);
 		
 		for(i=indexOfMeeting; i < (ptr->numOfMeetings); i++) {
 			ptr->ADptr[i] = ptr->ADptr[i+1];
 		}
 		(ptr->numOfMeetings)--;
-		
+
+	}
+	
 	return MEETING_REMOVED;
 }
 
@@ -164,6 +179,12 @@ int findMeetingForInsert(AD* ptr) {
 	for (index=0; index < ptr->numOfMeetings; index++) {
 		if( !(ptr->ADptr[index]->startTime < ptr->tmpMeeting->startTime) ) return index;
 	}
+		
+	for (index=0; index < ptr->numOfMeetings; index++) {
+		if( ptr->ADptr[index]->startTime > ptr->tmpMeeting->endTime) return index;
+	}
+	return NO_MEETING_FOUND;
+
 }
 
 int checkOverlap (AD* ptr) {

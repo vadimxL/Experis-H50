@@ -32,7 +32,6 @@ AD* createAD();
 ** 				allocation fail 	- PTR_NOT_INIT.
 ** notes: 		1.
 ** 				2.
-** Error:      PTR_NOT_INIT, ALLOC_SUCCESS
 */
 ADErr createMeeting(AD* ptr, float startTime, float endTime, size_t room);
 
@@ -55,7 +54,12 @@ void destroyAD(AD* ptr);
 ** Input: pointer to pointer, value, size of structure, number of elements, how much to increase
 ** Ouput: Status of a function
 ** Error: DATA_OVERFLOW, REALLOC_FAIL,PTR_NOT_INIT
-*/ 
+** Description: Insert member to the end of structure, heavy usage of realloc function
+** Input: pointer to pointer, value, size of structure, number of elements, how much to increase
+** Ouput: Status of a function
+** Error: DATA_OVERFLOW, REALLOC_FAIL,PTR_NOT_INIT
+*/
+
 ADErr insertMeeting(AD* ptr);	
 	
 		

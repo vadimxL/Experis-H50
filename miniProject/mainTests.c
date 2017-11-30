@@ -7,6 +7,7 @@
 int test1(); // Test for meeting overlap
 int test2(); // Test for NULL
 int test3(); // Test for NULL
+int test4();
 
 
 int main() {
@@ -60,6 +61,13 @@ int test3() {
 
 	if( createMeeting(NULL, 10, 11, 450) == PTR_NOT_INIT) return PASS;
 	return FAIL;
+
+return 0;
+}
+
+int test4() {
+
+
 
 return 0;
 }
