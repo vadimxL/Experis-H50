@@ -1,0 +1,24 @@
+
+
+
+char myString[] = "Vadim";
+char myPolindrom[] = "sosos";
+int num = 13;
+char myNumber[] = "1056";
+int Number = 1056;
+char myBuffer[64];
+char* myName = NULL;
+char* myName = "Vadim";
+char myFullName[] = "Mr Vadim Malinovsky";
+
+
+
+
+printf("%d\n",myatoi(myNumber) );
+myitoa(Number,myBuffer);
+reverseStr(myString);
+printf("%s\n", myString);
+printf("%d\n",isPolindrom(myPolindrom));
+printBinary(num);
+printf("%p\n", myStrStr(myFullName, myName));
+
