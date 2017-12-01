@@ -21,7 +21,7 @@ while( choice != EXIT ) {
 	printf("-------------- Diary Menu: ---------------- \n\n");
 	printf("Choose what you want to do from 1 to 7 \n\n");
 	printf("1. Create diary \n2. Create meeting \n3. Insert meeting \n4. Remove meeting \n"); 
-   printf("5. Destroy Diary \n6. Print Diary \n7. Save to file \n8. Exit the program \n\n\n");     
+    printf("5. Destroy Diary \n6. Print Diary \n7. Save to file \n8. Exit the program \n\n\n");     
 	printf("------------------------------------------- \n");
 	printf("Please choose:");
 	scanf("%s",choiceStr);
@@ -119,7 +119,7 @@ while( choice != EXIT ) {
 				break;
 			}
 			saveToFile(ptr);
-			printf("Save to a file!\n");
+			printf("Saved to a file!\n");
 			break; 	 	
 				
 		case 8:	

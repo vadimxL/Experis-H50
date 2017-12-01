@@ -67,52 +67,15 @@ void destroyAD(AD* ptr) {
 
 ADErr insertMeeting(AD* ptr) {
 
-int indexOfMeeting, i;
+int indexOfMeeting;
 
 meeting** tmpMeetingPtr;
 
 	if(ptr == NULL || ptr->ADptr == NULL || ptr->tmpMeeting == NULL )
 		return PTR_NOT_INIT;
-		
-	if( ptr->numOfMeetings > 0 ) {
-	
-		if( !(ptr->ADptr[0]->startTime > ptr->tmpMeeting->endTime || ptr->ADptr[ptr->numOfMeetings-1]->endTime < ptr->tmpMeeting->startTime) ) 
-		
-		{
 
-			if( checkOverlap(ptr) == MEETING_OVERLAP )
-				return MEETING_OVERLAP;
-				
-			if( ptr->numOfMeetings == ptr->size ) {
-			tmpMeetingPtr = (meeting**)realloc(ptr->ADptr, ((ptr->size)+(ptr->incrMeetingsNum))*sizeof(meeting*));
-			if( tmpMeetingPtr != NULL ) {
-				ptr->ADptr = tmpMeetingPtr;
-				ptr->size += ptr->incrMeetingsNum;
-			}
-			else
-				return REALLOC_FAIL;
-			}
-			
-			indexOfMeeting = findMeetingForInsert(ptr);
-			
-			if (indexOfMeeting != NO_MEETING_FOUND) {
-				
-				shiftAndInsert(ptr, indexOfMeeting);
-				
-			
-				for(i=indexOfMeeting; i < (ptr->numOfMeetings); i++) {
-					ptr->ADptr[i+1] = ptr->ADptr[i];
-				}
-				ptr->ADptr[indexOfMeeting] = ptr->tmpMeeting;
-				
-				(ptr->numOfMeetings)++;
-				return INSERT_SUCCESS;
-			}
-		}
-	} 
 
 	if( ptr->numOfMeetings == ptr->size ) {
-	
 		tmpMeetingPtr = (meeting**)realloc(ptr->ADptr, ((ptr->size)+(ptr->incrMeetingsNum))*sizeof(meeting*));
 		if( tmpMeetingPtr != NULL ) {
 			ptr->ADptr = tmpMeetingPtr;
@@ -121,14 +84,22 @@ meeting** tmpMeetingPtr;
 		else
 			return REALLOC_FAIL;
 	}
-	
-	
-	indexOfMeeting = findMeetingForInsert(ptr);
-	shiftAndInsert(ptr, indexOfMeeting);
-	ptr->ADptr[ptr->numOfMeetings] = ptr->tmpMeeting;
-	(ptr->numOfMeetings)++;
 
-	return INSERT_SUCCESS;
+	if (ptr->numOfMeetings == 0) {
+		shiftAndInsert(ptr,ptr->numOfMeetings);
+		return INSERT_SUCCESS;
+	}
+		
+		
+	if( ptr->numOfMeetings > 0 ) {
+
+		if( checkOverlap(ptr) == MEETING_OVERLAP )
+			return MEETING_OVERLAP;
+
+		shiftAndInsert(ptr, findMeetingForInsert(ptr) );
+			return INSERT_SUCCESS;
+	}
+ 
 }
 
 ADErr removeMeeting(AD* ptr, float startTime) {
@@ -173,19 +144,11 @@ int findMeeting(AD* ptr, float startTime) {
 int findMeetingForInsert(AD* ptr) {
 
 	int index;
-	
-	if( ptr->numOfMeetings == 0)
-		return 0;
-		
-	for (index=0; index < ptr->numOfMeetings; index++) {
-		if( !(ptr->ADptr[index]->startTime < ptr->tmpMeeting->startTime) ) return index;
-	}
-		
-	for (index=0; index < ptr->numOfMeetings; index++) {
-		if( ptr->ADptr[index]->startTime > ptr->tmpMeeting->endTime) return index;
-	}
-	return NO_MEETING_FOUND;
 
+		
+	for (index=0; index < ptr->numOfMeetings; index++)
+		if( !(ptr->ADptr[index]->startTime < ptr->tmpMeeting->startTime) ) return index;
+		
 }
 
 int checkOverlap (AD* ptr) {
@@ -193,10 +156,10 @@ int checkOverlap (AD* ptr) {
 	
 	for(i=0; i < ptr->numOfMeetings; i++) {
 	
-		if ( ptr->tmpMeeting->startTime > ptr->ADptr[i]->endTime || ptr->tmpMeeting->endTime < ptr->ADptr[i]->startTime )
-			return MEETING_NOT_OVERLAP;
-		} 
-	return MEETING_OVERLAP;
+		if ( !(ptr->tmpMeeting->startTime > ptr->ADptr[i]->endTime || ptr->tmpMeeting->endTime < ptr->ADptr[i]->startTime) )
+			return  MEETING_OVERLAP; 
+	} 
+	return MEETING_NOT_OVERLAP;
 }
 
 void shiftAndInsert(AD* ptr,int index) {
@@ -205,6 +168,7 @@ void shiftAndInsert(AD* ptr,int index) {
 		ptr->ADptr[i] = ptr->ADptr[i-1];
 	}
 	ptr->ADptr[index] = ptr->tmpMeeting;
+	(ptr->numOfMeetings)++;
 }
 
 
@@ -217,23 +181,34 @@ ADErr saveToFile(AD* ptr) {
 	ptr->fp = fp;
 
 	for(i=0; i < ptr->numOfMeetings; i++)
-		fprintf(fp,"%f %f %lu\n",ptr->ADptr[i]->startTime,ptr->ADptr[i]->endTime,ptr->ADptr[i]->room);
+		fprintf(fp,"%f%f%lu\n",ptr->ADptr[i]->startTime,ptr->ADptr[i]->endTime,ptr->ADptr[i]->room);
+
+	fclose(fp);
 }
 
 ADErr loadFromFile(AD* ptr) {
 	float startTime, endTime;
 	size_t room;
-	int i;		
-	if(ptr == NULL) return PTR_NOT_INIT;	
+	int cnt;		
+	if(ptr == NULL || ptr->ADptr == NULL) return PTR_NOT_INIT;	
+
 	FILE* fp = fopen("dailyDiary.txt", "r");
 	if(fp == NULL) return PTR_NOT_INIT;
 	ptr->fp = fp;
 	
-	while(feof(fp)) {
-		fscanf(fp,"%f %f %lu\n",&startTime,&endTime,&room);
+	while(1) {	
+		cnt = fscanf(fp,"%f %f %lu",&startTime,&endTime,&room);
+
+		if (cnt != 3) {
+			break;
+		}
+		
 		createMeeting(ptr, startTime,endTime,room);
-		insertMeeting(ptr);
+		insertMeeting(ptr); 
 	}
+
+	fclose(fp);
+	return LOAD_SUCCESS;
 }
 
 
