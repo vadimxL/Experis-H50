@@ -4,7 +4,7 @@
 typedef struct AD AD;
 typedef struct meeting meeting;
 
-typedef enum ADErr { AD_OK=50, PTR_NOT_INIT, DATA_OVERFLOW, REALLOC_FAIL, DATA_UNDERFLOW, NO_MEETING_FOUND, MEETING_REMOVED, 
+typedef enum { AD_OK=50, PTR_NOT_INIT, DATA_OVERFLOW, REALLOC_FAIL, DATA_UNDERFLOW, NO_MEETING_FOUND, MEETING_REMOVED, 
 						   MEETING_OVERLAP, MEETING_NOT_OVERLAP, INSERT_SUCCESS,ALLOC_SUCCESS, LOAD_FAIL, LOAD_SUCCESS } ADErr;
 
 
@@ -22,17 +22,17 @@ AD* createAD();
 			
 
 
-/* 
-** description: create struct of meeting type.
-** input: 		startTime - end time of meeting, float format.
-**              endTime - end time of meeting, float format.
-				room - room number.s
-** 					
-** output: 		allocation success  - ALLOC_SUCCESS.
-** 				allocation fail 	- PTR_NOT_INIT.
-** notes: 		1.
-** 				2.
-*/
+/*********************************************************************************
+* description: create struct of meeting type.									 *
+* input: 		startTime - end time of meeting, float format.					 *
+*               endTime - end time of meeting, float format.					 *
+*				room - room number.s											 *
+* output: 		allocation success  - ALLOC_SUCCESS.							 *
+* 				allocation fail 	- PTR_NOT_INIT.								 *
+* notes: 		1.																 *
+* 				2.																 *
+*********************************************************************************/
+
 ADErr createMeeting(AD* ptr, float startTime, float endTime, size_t room);
 
 
