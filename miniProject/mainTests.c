@@ -13,12 +13,10 @@ int test4(); // Test for Loading from file
 int main() {
 
 
-
-
 //printf("Test 1 is %s\n", test1() ? "PASS" : "FAIL" );
 //printf("Test 1 is %s\n", test2() ? "PASS" : "FAIL" );
 //printf("Test 1 is %s\n", test3() ? "PASS" : "FAIL" );
-printf("Test 4 is %s\n", test4() ? "PASS" : "FAIL" );
+//printf("Test 4 is %s\n", test4() ? "PASS" : "FAIL" );
 
 
 return 0;

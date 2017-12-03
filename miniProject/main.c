@@ -5,39 +5,21 @@
 
 typedef enum {FALSE=0, TRUE} bool_t;
 
-
 int main() {
 
 float startTime, endTime, removeTime;
 size_t room, size = 9;
 char choiceStr[200];
+char fName[200];
 int choice;
-AD* ptr;
+AD* ptr = NULL;
 char* choicePrint[] = { "1. Create diary",   "2. Create meeting",  "3. Insert meeting",
-						"4. Remove meeting", "5. Destroy diary",   "6. Print diary", 
-						"7. Save to file",   "8. Load from file",  "9. Exit the program" } ;
+						      "4. Remove meeting", "5. Destroy diary",   "6. Print diary", 
+						      "7. Save to file",   "8. Load from file",  "9. Exit the program" } ;
 
-while(choice != TRUE) {
 
-	puts("-------------- Diary Menu: ----------------");
-	puts("Please create diary");
-	printf("%s%c", choicePrint[0], '\n');      
-	puts("Please choose 1:");
-
-	scanf("%s",choiceStr);
-	choice = atoi(choiceStr);
-	
-	if ( choice == TRUE ) {
-		ptr = createAD();
-		if(ptr == NULL) puts("Failed to create Diary");
-			puts("Daily Diary created");
-	}
-    else puts("Invalid Input");
-
-}
-
- 
 while( choice != EXIT ) {
+
 
 	puts("-------------- Diary Menu: ----------------");
 	printf("Choose what you want to do from 1 to %lu \n", size); 
@@ -68,7 +50,10 @@ while( choice != EXIT ) {
 	    	createMeeting(ptr,startTime,endTime,room);
 			break;
 		case 3:
-			insertMeeting(ptr);
+			if( insertMeeting(ptr) == PTR_NOT_INIT ) {
+				puts("diary is null");
+				break;
+			}
 			printf("Meeting inserted\n\n");
 			break;
 		case 4:
@@ -89,7 +74,8 @@ while( choice != EXIT ) {
 			printAD(ptr);
 			break;
 		case 7:
-			saveToFile(ptr);
+			scanf("Please enter the name of file: %s\n",fName);
+			saveToFile(ptr, fName);
 			printf("Saved to a file!\n");
 			break; 	 	
 		case 8:
@@ -100,27 +86,14 @@ while( choice != EXIT ) {
 			printf("Exiting the program\n");
 			break;
 	}
-	printf("\e[1;1H\e[2J");
 }	
 return 0;
 }
 
 /*
 
-
-	switch(*flag) {
-		case NO_AD:
-			printf("First create a diary\n\n");
-			return FALSE;
-			break;
-		case AD_NO_MEET:
-			printf("First create a meeting\n\n");
-			return FALSE;
-			break;
-		case AD_MEET_NO_INSERT:
-			printf("First insert a meeting\n\n");
-			return FALSE;
-			break;
-
+	printf("First create a diary\n\n");
+	printf("First create a meeting\n\n");
+	printf("First insert a meeting\n\n");
 
 */

@@ -172,11 +172,11 @@ void shiftAndInsert(AD* ptr,int index) {
 }
 
 
-ADErr saveToFile(AD* ptr) {
+ADErr saveToFile(AD* ptr, char* fName) {
 	
 	int i;		
 	if(ptr == NULL) return PTR_NOT_INIT;	
-	FILE* fp = fopen("dailyDiary.txt", "w");
+	FILE* fp = fopen(fName, "w");
 	if(fp == NULL) return PTR_NOT_INIT;
 	ptr->fp = fp;
 
@@ -203,10 +203,9 @@ ADErr loadFromFile(AD* ptr) {
 			break;
 		}
 		
-		createMeeting(ptr, startTime,endTime,room);
+		if ( createMeeting(ptr, startTime,endTime,room) != ALLOC_SUCCESS ) return LOAD_FAIL;
 		insertMeeting(ptr); 
 	}
-
 	fclose(fp);
 	return LOAD_SUCCESS;
 }

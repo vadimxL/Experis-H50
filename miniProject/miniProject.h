@@ -92,7 +92,7 @@ void printAD(AD* ptr);
 ** Error: PTR_NOT_INIT
 */
 
-ADErr saveToFile(AD* ptr);
+ADErr saveToFile(AD* ptr, char* fName);
 
 /*
 ** Description: Save the contents of DA to file
