@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef enum { OK=50, PTR_NOT_INIT} Err;
+typedef enum { OK=50, PTR_NOT_INIT, REALLOC_FAIL} Err;
 typedef struct WA WA;
 typedef struct word word;
 

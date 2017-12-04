@@ -5,7 +5,6 @@ struct WA {
 	word* WAptr;
 	size_t size;
 	size_t numOfWords;
-	size_t incrWordsNum;
 };
 
 struct word {
@@ -53,7 +52,7 @@ Err countWords(char* someText) {
 
 	FILE* fp;
 	FILE* fp2;
-	int  count=0,cnt;
+	int count=0,cnt;
 	char nameOfFile[BUFFER];
 	char word[BUFFER];
 	char tmpWord[BUFFER];
@@ -85,9 +84,11 @@ Err countWords(char* someText) {
 Err wordsFrequency(char* fName) {
 
 	FILE* fp;
+	FILE* fpGhost;
 	char tmpWord[BUFFER];
 
-	int i,cnt;
+	int i,cnt,count=0;
+	word* tmpWordPtr;
 
 
 	WA* ptr = (WA*)malloc(sizeof(WA));
@@ -98,48 +99,52 @@ Err wordsFrequency(char* fName) {
 		
 	ptr->size = BUFFER;
 	ptr->numOfWords = 0;
-	ptr->incrWordsNum = BUFFER;
 	
 	fp = fopen(fName, "r");
 	
-	if( fp == NULL ) return PTR_NOT_INIT;
-	
-	ptr->numOfWords = 0;
+	if( fp == NULL || fpGhost == NULL ) return PTR_NOT_INIT;
 	
 	while(1) {
+
+		if( ptr->numOfWords == ptr->size ) {
+			tmpWordPtr = (word*)realloc(ptr->WAptr, 2*(ptr->size)*sizeof(word));
+			if( tmpWordPtr != NULL ) {
+				ptr->WAptr = tmpWordPtr;
+				ptr->size*=2;
+			}
+		else
+			return REALLOC_FAIL;
+		}
 		
-		cnt = fscanf(fp," %s",tmpWord);
+		count=0;		
+		
+		cnt = fscanf(fp,"%s",tmpWord);
 		if( cnt == EOF ) break;
 
 		if(ptr->numOfWords==0) {
-			strcpy( ((ptr->WAptr)[ptr->numOfWords]).name, tmpWord);
-			((ptr->WAptr)[ptr->numOfWords]).repeats=0;
+			strcpy(ptr->WAptr[ptr->numOfWords].name, tmpWord);
 			ptr->numOfWords++;
-			continue; 
+			continue;
 		}
 		
 		for(i=0; i<ptr->numOfWords; i++) {
-		
-			if(strcmp( ((ptr->WAptr)[i]).name, tmpWord ) == 0) {
-				((ptr->WAptr)[i]).repeats++;
+			if(strcmp(ptr->WAptr[i].name, tmpWord) == 0) {
+				ptr->WAptr[i].repeats++;
+				count++;
 			}
-			else {
-				strcpy( ((ptr->WAptr)[ptr->numOfWords]).name, tmpWord);
-				((ptr->WAptr)[ptr->numOfWords]).repeats=0;
-				ptr->numOfWords++;
-			}
+		}
+		if(count == 0) {
+			strcpy(ptr->WAptr[ptr->numOfWords].name, tmpWord);
+			ptr->numOfWords++;
 		}
 	}
 	
-	printf("%lu\n", ptr->numOfWords );
-	
-	//for(i=0; i<ptr->numOfWords; i++)
-	//	printf("%s      : %d", ((ptr->WAptr)[i]).name, ((ptr->WAptr)[i]).repeats );
-	
+	for(i = 0; i < ptr->numOfWords ; i++)
+		printf("%s:        	%d\n", ptr->WAptr[i].name, ptr->WAptr[i].repeats+1);
+
+	fclose(fp);
 	free(ptr);
 	free(ptr->WAptr);
-	fclose(fp);
-
 
 return OK;
 }
