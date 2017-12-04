@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#define BUFFER 2048
 
 
 int nLastLines(char* fName, int n);
@@ -7,7 +9,7 @@ int nLastLines(char* fName, int n);
 int main() {
 
 
-nLastLines("Alice.txt", 5);
+nLastLines("Alice2.txt", 3);
 	
 
 
@@ -16,32 +18,32 @@ return 0;
 
 
 int nLastLines(char* fName, int n) {
-	int pos, lines=0;
-	char ch;
+
+	char line[BUFFER];
+   int count=0;
+   int i;
+	int* pos = (int*)malloc(n*sizeof(int));
 	FILE* fp = fopen(fName, "r");
 	if(fp == NULL) return 0;
 	
-	fseek(fp,0,SEEK_END); // put the position at end of file
-	pos = ftell(fp); // insert the position into pos variable
 	
-	
-	while(1) {
-	
-	if( ftell(fp) == 0 ) 
-		break;
-		
-	ch = fgetc(fp);
-	fseek(fp,-2,SEEK_CUR);
-	
-	if( ch == '\n' )
-		lines++;
-	
-	if (lines==n)
-		break;
-		
+	while( 1 ) {
+		if ( fgets(line, BUFFER, fp) == NULL) break;
+		count++;
+		pos[count % n] = ftell(fp); // insert the position into pos variables
 	}
 	
-	putchar(ch);
+	// for(i = 0; i < n; i++) printf("%d\n",pos[i]);
+
+	fseek(fp,pos[(count+1) % n],0); // seek the last line - n
+	
+	while( 1 ) {
+	
+		if ( fgets(line, BUFFER, fp) == NULL) break;
+		printf("%s", line );
+		
+	}
+	fclose(fp);
 	
 return 1;
 }

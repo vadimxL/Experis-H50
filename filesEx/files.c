@@ -1,5 +1,5 @@
 #include "files.h"
-#define BUFFER 100
+#define BUFFER 1024
 
 struct WA {
 	word* WAptr;
@@ -53,7 +53,7 @@ Err countWords(char* someText) {
 
 	FILE* fp;
 	FILE* fp2;
-	int count=0,cnt;
+	int  count=0,cnt;
 	char nameOfFile[BUFFER];
 	char word[BUFFER];
 	char tmpWord[BUFFER];
@@ -85,7 +85,6 @@ Err countWords(char* someText) {
 Err wordsFrequency(char* fName) {
 
 	FILE* fp;
-	FILE* fpGhost;
 	char tmpWord[BUFFER];
 
 	int i,cnt;
@@ -103,7 +102,9 @@ Err wordsFrequency(char* fName) {
 	
 	fp = fopen(fName, "r");
 	
-	if( fp == NULL || fpGhost == NULL ) return PTR_NOT_INIT;
+	if( fp == NULL ) return PTR_NOT_INIT;
+	
+	ptr->numOfWords = 0;
 	
 	while(1) {
 		
@@ -111,21 +112,32 @@ Err wordsFrequency(char* fName) {
 		if( cnt == EOF ) break;
 
 		if(ptr->numOfWords==0) {
-			strcpy(ptr->WAptr[ptr->numOfWords].name, tmpWord);
+			strcpy( ((ptr->WAptr)[ptr->numOfWords]).name, tmpWord);
+			((ptr->WAptr)[ptr->numOfWords]).repeats=0;
 			ptr->numOfWords++;
+			continue; 
 		}
 		
 		for(i=0; i<ptr->numOfWords; i++) {
-			if(strcmp(ptr->WAptr[i].name, tmpWord) == 0) {
-				ptr->WAptr[i].repeats++;
+		
+			if(strcmp( ((ptr->WAptr)[i]).name, tmpWord ) == 0) {
+				((ptr->WAptr)[i]).repeats++;
 			}
 			else {
-				strcpy(ptr->WAptr[ptr->numOfWords].name, tmpWord);
+				strcpy( ((ptr->WAptr)[ptr->numOfWords]).name, tmpWord);
+				((ptr->WAptr)[ptr->numOfWords]).repeats=0;
 				ptr->numOfWords++;
 			}
 		}
 	}
 	
+	printf("%lu\n", ptr->numOfWords );
+	
+	//for(i=0; i<ptr->numOfWords; i++)
+	//	printf("%s      : %d", ((ptr->WAptr)[i]).name, ((ptr->WAptr)[i]).repeats );
+	
+	free(ptr);
+	free(ptr->WAptr);
 	fclose(fp);
 
 

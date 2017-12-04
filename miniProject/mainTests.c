@@ -23,7 +23,6 @@ return 0;
 }
 
 
-/* Comment for commit check */
 
 /* Testing for meeting overlap */
 int test1() {
