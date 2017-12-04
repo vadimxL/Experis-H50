@@ -1,15 +1,15 @@
 #include "files.h"
 #define BUFFER 100
 
-struct AW {
-	word** AWptr;
+struct WA {
+	word* WAptr;
 	size_t size;
 	size_t numOfWords;
 	size_t incrWordsNum;
 };
 
 struct word {
-	char* name;
+	char name[BUFFER];
 	int repeats;
 };
 
@@ -86,25 +86,44 @@ Err wordsFrequency(char* fName) {
 
 	FILE* fp;
 	FILE* fpGhost;
-
-	int count=0,cnt;
-	char word[BUFFER];
 	char tmpWord[BUFFER];
+
+	int i,cnt;
+
+
+	WA* ptr = (WA*)malloc(sizeof(WA));
+	if (ptr == NULL) return PTR_NOT_INIT; 
+
+	ptr->WAptr = (word*)malloc(BUFFER*sizeof(word));
+	if (ptr->WAptr == NULL) return PTR_NOT_INIT;
+		
+	ptr->size = BUFFER;
+	ptr->numOfWords = 0;
+	ptr->incrWordsNum = BUFFER;
 	
 	fp = fopen(fName, "r");
 	
 	if( fp == NULL || fpGhost == NULL ) return PTR_NOT_INIT;
 	
 	while(1) {
-	
-		cnt = fscanf(fp," %s",word);
+		
+		cnt = fscanf(fp," %s",tmpWord);
 		if( cnt == EOF ) break;
-			
-		fpGhost = fopen("Ghost.txt", "w+");
-		fprintf(fpGhost,"%s %s", fName, word);
-	
-		fclose(fpGhost);
-		countWords("Ghost.txt");
+
+		if(ptr->numOfWords==0) {
+			strcpy(ptr->WAptr[ptr->numOfWords].name, tmpWord);
+			ptr->numOfWords++;
+		}
+		
+		for(i=0; i<ptr->numOfWords; i++) {
+			if(strcmp(ptr->WAptr[i].name, tmpWord) == 0) {
+				ptr->WAptr[i].repeats++;
+			}
+			else {
+				strcpy(ptr->WAptr[ptr->numOfWords].name, tmpWord);
+				ptr->numOfWords++;
+			}
+		}
 	}
 	
 	fclose(fp);

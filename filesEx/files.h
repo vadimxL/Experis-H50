@@ -4,8 +4,8 @@
 #include <ctype.h>
 
 typedef enum { OK=50, PTR_NOT_INIT} Err;
-typedef struct AW AW;
-typedef struct words words;
+typedef struct WA WA;
+typedef struct word word;
 
 
 /* 
